@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 
+<<<<<<< HEAD
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
+=======
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000/api');
+>>>>>>> 66aa8b3ec0b63c4542cdd783982f4793e3d6127f
 
 const COMMANDS = [
     'ls', 'cd', 'pwd', 'cat', 'touch', 'rm', 'mkdir', 'cp', 'mv', 'echo',

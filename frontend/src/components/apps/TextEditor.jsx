@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+<<<<<<< HEAD
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
+=======
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000/api');
+>>>>>>> 66aa8b3ec0b63c4542cdd783982f4793e3d6127f
 
 const TextEditor = ({ fileName, content: initialContent, onClose, isFocused }) => {
     const [text, setText] = useState(initialContent || "");

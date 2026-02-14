@@ -13,7 +13,11 @@ const FileExplorer = ({ path = '/', onClose, onFileOpen, isFocused }) => {
     const loadFiles = async (dir) => {
         setLoading(true);
         try {
+<<<<<<< HEAD
             const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
+=======
+            const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000/api');
+>>>>>>> 66aa8b3ec0b63c4542cdd783982f4793e3d6127f
             const res = await axios.post(`${API_URL}/files/list`, { path: dir });
             if (res.data.files) {
                 setFiles(res.data.files);
