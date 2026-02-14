@@ -369,3 +369,138 @@ body {
     opacity: 0;
   }
 }
+
+/* ═══════════════════════════════════════════════ */
+/* COLLECTIBLE THEMES                              */
+/* ═══════════════════════════════════════════════ */
+
+.theme-neon-pink {
+  --color-cyber-green: #ff00ff;
+  --color-cyber-dark-green: #4a004a;
+}
+
+.theme-ice-blue {
+  --color-cyber-green: #00d4ff;
+  --color-cyber-dark-green: #003a4a;
+}
+
+.theme-vaporwave {
+  --color-cyber-green: #ff71ce;
+  --color-cyber-dark-green: #4a0033;
+}
+
+.theme-gold {
+  --color-cyber-green: #ffd700;
+  --color-cyber-dark-green: #4a3d00;
+}
+
+.theme-stealth {
+  --color-cyber-green: #888888;
+  --color-cyber-dark-green: #222222;
+}
+
+/* ═══════════════════════════════════════════════ */
+/* LOOT RARITY GLOW ANIMATIONS                     */
+/* ═══════════════════════════════════════════════ */
+
+@keyframes rarity-common-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
+  }
+}
+
+@keyframes rarity-rare-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(192, 132, 252, 0.7);
+  }
+}
+
+@keyframes rarity-legendary-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 60px rgba(251, 191, 36, 0.8), 0 0 80px rgba(251, 191, 36, 0.3);
+  }
+}
+
+/* Floating crate animation */
+@keyframes crate-float {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+
+  75% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+/* Interactive network feed pulse */
+@keyframes feed-interactive {
+
+  0%,
+  100% {
+    border-color: rgba(34, 211, 238, 0.3);
+  }
+
+  50% {
+    border-color: rgba(34, 211, 238, 0.8);
+  }
+}
+
+.feed-interactive-event {
+  animation: feed-interactive 1s ease-in-out infinite;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Daily challenge completion flash */
+@keyframes challenge-complete {
+  0% {
+    background: rgba(34, 211, 238, 0);
+  }
+
+  50% {
+    background: rgba(34, 211, 238, 0.15);
+  }
+
+  100% {
+    background: rgba(34, 211, 238, 0);
+  }
+}
+
+/* Profile ring animation */
+@keyframes profile-ring {
+  0% {
+    stroke-dashoffset: 283;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

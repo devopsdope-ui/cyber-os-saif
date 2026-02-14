@@ -9,6 +9,7 @@ import MissionLog from './apps/MissionLog';
 import SystemMonitor from './apps/SystemMonitor';
 import ChatApp from './apps/ChatApp';
 import MusicPlayer from './apps/MusicPlayer';
+import ProfileDashboard from './apps/ProfileDashboard';
 
 const APP_SIZES = {
     TERMINAL: { width: 'w-[55%]', height: 'h-[65%]' },
@@ -20,6 +21,7 @@ const APP_SIZES = {
     SYSTEM_MONITOR: { width: 'w-[50%]', height: 'h-[65%]' },
     CHAT: { width: 'w-[55%]', height: 'h-[65%]' },
     MUSIC_PLAYER: { width: 'w-[45%]', height: 'h-[55%]' },
+    PROFILE: { width: 'w-[45%]', height: 'h-[70%]' },
 };
 
 const APP_LABELS = {
@@ -32,9 +34,10 @@ const APP_LABELS = {
     SYSTEM_MONITOR: '📊 SYS_MON',
     CHAT: '💬 RELAY_CHAT',
     MUSIC_PLAYER: '🎵 MUSIC_PLAYER',
+    PROFILE: '👤 USER_PROFILE',
 };
 
-const WindowManager = ({ windows, closeWindow, focusWindow, minimizeWindow, onCommand, onFileOpen, history, setHistory, isDraggingFile, playTypingSound, onUnreadChange }) => {
+const WindowManager = ({ windows, closeWindow, focusWindow, minimizeWindow, onCommand, onFileOpen, history, setHistory, isDraggingFile, playTypingSound, onUnreadChange, stats, totalXP, level, streak }) => {
     return (
         <>
             {windows.map((win) => {
@@ -65,7 +68,7 @@ const WindowManager = ({ windows, closeWindow, focusWindow, minimizeWindow, onCo
                             }`}
                     >
                         {/* Window Title Bar (except for apps that render their own) */}
-                        {!['TERMINAL', 'TEXT_EDITOR', 'IMAGE_VIEWER', 'MINIGAME', 'FILE_EXPLORER', 'MISSION_LOG', 'SYSTEM_MONITOR', 'CHAT', 'MUSIC_PLAYER'].includes(win.type) && (
+                        {!['TERMINAL', 'TEXT_EDITOR', 'IMAGE_VIEWER', 'MINIGAME', 'FILE_EXPLORER', 'MISSION_LOG', 'SYSTEM_MONITOR', 'CHAT', 'MUSIC_PLAYER', 'PROFILE'].includes(win.type) && (
                             <div className={`flex justify-between items-center p-1 px-2 border-b ${isFocused ? 'bg-cyber-green text-black' : 'bg-gray-900 text-cyber-green/50'}`}>
                                 <span className="font-bold text-xs">{APP_LABELS[win.type] || win.type}</span>
                                 <div className="flex gap-1">
@@ -147,6 +150,17 @@ const WindowManager = ({ windows, closeWindow, focusWindow, minimizeWindow, onCo
                             <MusicPlayer
                                 onClose={() => closeWindow(win.id)}
                                 isFocused={isFocused}
+                            />
+                        )}
+
+                        {win.type === 'PROFILE' && (
+                            <ProfileDashboard
+                                onClose={() => closeWindow(win.id)}
+                                isFocused={isFocused}
+                                stats={stats}
+                                totalXP={totalXP}
+                                level={level}
+                                streak={streak}
                             />
                         )}
                     </motion.div>

@@ -7,6 +7,10 @@ import XPNotification from './XPNotification';
 import AchievementSystem from './AchievementSystem';
 import StatusBar from './StatusBar';
 import ContextMenu from './ContextMenu';
+import LootDropSystem from './LootDropSystem';
+import DailyChallenges from './DailyChallenges';
+import NotificationSystem from './NotificationSystem';
+import ScreenEffects from './ScreenEffects';
 import { useScrambleText } from '../hooks/useScrambleText';
 import { useSoundEffects } from '../hooks/useSoundEffects';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -26,6 +30,8 @@ const DesktopEnvironment = () => {
     const [contextMenu, setContextMenu] = useState(null);
     const [chatUnread, setChatUnread] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
+    const notificationRef = useRef(null);
+    const screenEffectsRef = useRef(null);
     const [lockInput, setLockInput] = useState('');
 
     const [history, setHistory] = useState([
@@ -81,6 +87,7 @@ const DesktopEnvironment = () => {
     const triggerXP = useCallback((message, amount = 50) => {
         setXpEvent({ id: Date.now(), message, xp: amount });
         playSuccessSound();
+        screenEffectsRef.current?.particles?.(8);
         setTotalXP(prev => {
             const newXP = prev + amount;
             localStorage.setItem('cyber_total_xp', String(newXP));
@@ -93,6 +100,9 @@ const DesktopEnvironment = () => {
             if (currentLevel > level) {
                 setLevel(currentLevel);
                 localStorage.setItem('cyber_level', String(currentLevel));
+                screenEffectsRef.current?.shake?.();
+                screenEffectsRef.current?.particles?.(25);
+                notificationRef.current?.notify?.(`🎉 LEVEL UP! You are now Level ${currentLevel}!`, 'legendary', 5000);
                 setTimeout(() => {
                     setXpEvent({ id: Date.now() + 1, message: `🎉 LEVEL UP! Level ${currentLevel}!`, xp: 0 });
                 }, 1500);
@@ -119,9 +129,23 @@ const DesktopEnvironment = () => {
     const title = useScrambleText("CYBER_OS_V2.1", 50);
 
     // Window Management
+    // Theme unlock handler
+    const handleThemeUnlock = useCallback((themeId) => {
+        const saved = localStorage.getItem('cyber_unlocked_themes');
+        const themes = saved ? JSON.parse(saved) : ['green', 'blue', 'red', 'amber'];
+        if (!themes.includes(themeId)) {
+            themes.push(themeId);
+            localStorage.setItem('cyber_unlocked_themes', JSON.stringify(themes));
+        }
+    }, []);
+
+    const handleNotification = useCallback((message, type) => {
+        notificationRef.current?.notify?.(message, type);
+    }, []);
+
     const openWindow = (type, data = {}) => {
         // Focus existing if singleton
-        const singletons = ['SYSTEM_MONITOR', 'CHAT', 'MISSION_LOG', 'MINIGAME'];
+        const singletons = ['SYSTEM_MONITOR', 'CHAT', 'MISSION_LOG', 'MINIGAME', 'PROFILE'];
         if (singletons.includes(type)) {
             const existing = windows.find(w => w.type === type);
             if (existing) {
@@ -156,7 +180,8 @@ const DesktopEnvironment = () => {
     };
 
     const toggleTheme = () => {
-        const themes = ['green', 'blue', 'red', 'amber'];
+        const saved = localStorage.getItem('cyber_unlocked_themes');
+        const themes = saved ? JSON.parse(saved) : ['green', 'blue', 'red', 'amber'];
         setTheme(themes[(themes.indexOf(theme) + 1) % themes.length]);
         playSuccessSound();
     };
@@ -201,6 +226,7 @@ const DesktopEnvironment = () => {
         if (cmd === 'music' || cmd === 'play') { openWindow('MUSIC_PLAYER'); return { type: 'text', content: 'Opening CYBER_AUDIO...' }; }
         if (cmd === 'sysmon' || cmd === 'top' || cmd === 'htop') { openWindow('SYSTEM_MONITOR'); return { type: 'text', content: 'Opening System Monitor...' }; }
         if (cmd === 'explorer' || cmd === 'files') { openWindow('FILE_EXPLORER', { path: '/' }); return { type: 'text', content: 'Opening File Explorer...' }; }
+        if (cmd === 'profile' || cmd === 'whoami') { openWindow('PROFILE'); return { type: 'text', content: 'Opening User Profile...' }; }
         if (cmd === 'lock') { setIsLocked(true); return { type: 'text', content: 'SCREEN LOCKED.' }; }
 
         try {
@@ -295,6 +321,7 @@ const DesktopEnvironment = () => {
                 { icon: '📁', label: 'File Explorer', action: () => openWindow('FILE_EXPLORER', { path: '/' }) },
                 { icon: '📊', label: 'System Monitor', action: () => openWindow('SYSTEM_MONITOR') },
                 { icon: '📝', label: 'Text Editor', action: () => openWindow('TEXT_EDITOR', { fileName: 'untitled.txt', content: '' }) },
+                { icon: '👤', label: 'User Profile', action: () => openWindow('PROFILE') },
             ]
         },
         {
@@ -320,6 +347,9 @@ const DesktopEnvironment = () => {
             onClick={() => { setContextMenu(null); setIsStartMenuOpen(false); }}
         >
             <XPNotification event={xpEvent} />
+            <NotificationSystem ref={notificationRef} />
+            <ScreenEffects ref={screenEffectsRef} onNotification={handleNotification} />
+            <LootDropSystem onXPGain={(amount, msg) => triggerXP(msg, amount)} onThemeUnlock={handleThemeUnlock} onNotification={handleNotification} />
 
             {showMatrix ? <MatrixRain /> : (
                 <div className="absolute inset-0 pointer-events-none opacity-5 bg-gradient-to-br from-cyber-green/10 via-transparent to-cyber-green/5"></div>
@@ -357,11 +387,12 @@ const DesktopEnvironment = () => {
                 <FileIcon name="CHAT" type="exe" onDoubleClick={() => openWindow('CHAT')} />
                 <FileIcon name="MUSIC" type="exe" onDoubleClick={() => openWindow('MUSIC_PLAYER')} />
                 <FileIcon name="MISSIONS" type="exe" onDoubleClick={() => openWindow('MISSION_LOG')} />
+                <FileIcon name="PROFILE" type="exe" onDoubleClick={() => openWindow('PROFILE')} />
             </div>
 
             {/* Network Feed */}
             <div className="absolute bottom-12 right-3 z-0 opacity-80">
-                <NetworkFeed />
+                <NetworkFeed onInteractiveEvent={(xp) => triggerXP('INTERCEPTED DATA', xp)} />
             </div>
 
             {/* Windows */}
@@ -372,6 +403,7 @@ const DesktopEnvironment = () => {
                         minimizeWindow={minimizeWindow} onCommand={handleCommand} onFileOpen={handleFileOpen}
                         history={history} setHistory={setHistory} isDraggingFile={isDraggingFile}
                         playTypingSound={playTypingSound} onUnreadChange={setChatUnread}
+                        stats={stats} totalXP={totalXP} level={level} streak={streak}
                     />
                 </div>
             </div>
@@ -478,6 +510,10 @@ const DesktopEnvironment = () => {
                 <div className="h-2/3 w-[1px] bg-cyber-green/15 mx-0.5"></div>
 
                 <AchievementSystem stats={stats} onXPGain={handleAchievementXP} />
+
+                <div className="h-2/3 w-[1px] bg-cyber-green/15 mx-0.5"></div>
+
+                <DailyChallenges stats={stats} onXPGain={(amount, msg) => triggerXP(msg, amount)} onNotification={handleNotification} />
             </div>
 
             <div className="scanline-overlay"></div>
