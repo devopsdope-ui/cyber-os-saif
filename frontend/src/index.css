@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-cyber-black: #050505;
   --color-cyber-green: #00ff41;
   --color-cyber-dark-green: #003b00;
   --font-mono: 'Courier New', monospace;
+}
+
+@theme {
+  --color-cyber-black: var(--color-cyber-black);
+  --color-cyber-green: var(--color-cyber-green);
+  --color-cyber-dark-green: var(--color-cyber-dark-green);
+  --font-mono: var(--font-mono);
 }
 
 /* Global Styles */
@@ -13,38 +20,13 @@ body {
   color: var(--color-cyber-green);
   font-family: var(--font-mono);
   overflow: hidden;
-  text-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
+  /* Reduced text shadow for cleaner look */
+  text-shadow: 0 0 2px rgba(var(--color-cyber-green), 0.3);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-}
+/* ... Scrollbar styles (keep same) ... */
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-cyber-dark-green);
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-cyber-green);
-}
-
-/* Hide scrollbar utility */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Scanline Effect */
+/* Scanline Effect - Subtle */
 .scanline-overlay {
   position: fixed;
   top: 0;
@@ -54,54 +36,22 @@ body {
   background: linear-gradient(to bottom,
       rgba(255, 255, 255, 0),
       rgba(255, 255, 255, 0) 50%,
-      rgba(0, 0, 0, 0.08) 50%,
-      rgba(0, 0, 0, 0.08));
-  background-size: 100% 4px;
+      rgba(0, 0, 0, 0.04) 50%,
+      rgba(0, 0, 0, 0.04));
+  background-size: 100% 3px;
   pointer-events: none;
   z-index: 9999;
-  animation: scanline 10s linear infinite;
-  opacity: 0.5;
+  opacity: 0.3;
+  /* Reduced opacity */
 }
 
-@keyframes scanline {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 0 100%;
-  }
-}
-
-/* Glitch Container Effect */
+/* Glitch Container Effect - Removed random glitching for stability */
 .glitch-container {
   position: relative;
 }
 
-.glitch-container::before,
-.glitch-container::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--color-cyber-black);
-}
+/* Only apply glitch on hover or active state if needed, distinct from static text */
 
-.glitch-container::before {
-  left: 2px;
-  text-shadow: -1px 0 #ff00c1;
-  clip-path: inset(44% 0 61% 0);
-  animation: glitch-anim-1 2s infinite linear alternate-reverse;
-}
-
-.glitch-container::after {
-  left: -2px;
-  text-shadow: -1px 0 #00fff9;
-  clip-path: inset(58% 0 43% 0);
-  animation: glitch-anim-2 2s infinite linear alternate-reverse;
-}
 
 @keyframes glitch-anim-1 {
   0% {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { xpForLevel } from './AchievementSystem';
+import SignalWidget from './SignalWidget'; // Import SignalWidget
 
-const StatusBar = ({ totalXP, level, streak, sessionStart }) => {
+const StatusBar = ({ totalXP, level, streak, sessionStart, onSignalDecrypt, onNotification }) => {
     const [sessionTime, setSessionTime] = useState('0:00');
     const [pulse, setPulse] = useState(false);
 
@@ -57,6 +58,13 @@ const StatusBar = ({ totalXP, level, streak, sessionStart }) => {
                     <span className="text-orange-400 font-bold">{streak}</span>
                 </div>
             )}
+
+            <div className="h-4 w-[1px] bg-cyber-green/20 mx-1"></div>
+
+            {/* Signal Widget (Active Gameplay) */}
+            <SignalWidget onDecrypt={onSignalDecrypt} onNotification={onNotification} />
+
+            <div className="flex-1"></div>
 
             {/* Session timer */}
             <span className="text-[10px] text-cyber-green/30 font-mono" title="Session time">

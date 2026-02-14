@@ -58,7 +58,8 @@ const WindowManager = ({ windows, closeWindow, focusWindow, minimizeWindow, onCo
                             y: isMaximized ? 0 : win.y,
                             scale: 1,
                             opacity: 1,
-                            zIndex: isFocused ? 50 : 10,
+                            opacity: 1,
+                            zIndex: isFocused ? 60 : 40,
                             width: isMaximized ? '100%' : undefined,
                             height: isMaximized ? '100%' : undefined,
                         }}

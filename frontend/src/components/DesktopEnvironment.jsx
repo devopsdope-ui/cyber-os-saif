@@ -7,7 +7,6 @@ import XPNotification from './XPNotification';
 import AchievementSystem from './AchievementSystem';
 import StatusBar from './StatusBar';
 import ContextMenu from './ContextMenu';
-import LootDropSystem from './LootDropSystem';
 import DailyChallenges from './DailyChallenges';
 import NotificationSystem from './NotificationSystem';
 import ScreenEffects from './ScreenEffects';
@@ -349,7 +348,7 @@ const DesktopEnvironment = () => {
             <XPNotification event={xpEvent} />
             <NotificationSystem ref={notificationRef} />
             <ScreenEffects ref={screenEffectsRef} onNotification={handleNotification} />
-            <LootDropSystem onXPGain={(amount, msg) => triggerXP(msg, amount)} onThemeUnlock={handleThemeUnlock} onNotification={handleNotification} />
+            {/* LootDropSystem removed per user feedback for clearer UI */}
 
             {showMatrix ? <MatrixRain /> : (
                 <div className="absolute inset-0 pointer-events-none opacity-5 bg-gradient-to-br from-cyber-green/10 via-transparent to-cyber-green/5"></div>
@@ -472,7 +471,7 @@ const DesktopEnvironment = () => {
             </AnimatePresence>
 
             {/* Taskbar */}
-            <div className="absolute bottom-0 left-0 w-full h-10 bg-black/95 border-t border-cyber-green/30 flex items-center px-2 gap-1.5 z-50 select-none backdrop-blur-sm">
+            <div className="absolute bottom-0 left-0 w-full h-10 bg-black/95 border-t border-cyber-green/30 flex items-center px-2 gap-1.5 z-[100] select-none backdrop-blur-sm">
                 <button
                     className="px-2.5 py-1 bg-cyber-green text-black font-bold text-xs hover:bg-white transition-colors"
                     onClick={(e) => { e.stopPropagation(); setIsStartMenuOpen(!isStartMenuOpen); setContextMenu(null); playSuccessSound(); }}
@@ -505,7 +504,14 @@ const DesktopEnvironment = () => {
 
                 <div className="h-2/3 w-[1px] bg-cyber-green/15 mx-0.5"></div>
 
-                <StatusBar totalXP={totalXP} level={level} streak={streak} sessionStart={sessionStart} />
+                <StatusBar
+                    totalXP={totalXP}
+                    level={level}
+                    streak={streak}
+                    sessionStart={sessionStart}
+                    onSignalDecrypt={(xp, msg) => triggerXP(msg, xp)}
+                    onNotification={handleNotification}
+                />
 
                 <div className="h-2/3 w-[1px] bg-cyber-green/15 mx-0.5"></div>
 
