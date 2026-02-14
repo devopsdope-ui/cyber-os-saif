@@ -204,7 +204,7 @@ const DesktopEnvironment = () => {
         if (cmd === 'lock') { setIsLocked(true); return { type: 'text', content: 'SCREEN LOCKED.' }; }
 
         try {
-            const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:8000/api';
+            const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:8000/api');
             const res = await axios.post(API_URL + '/terminal/command', { command: cmd });
             return res.data;
         } catch (error) {
